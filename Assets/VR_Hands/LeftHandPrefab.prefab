@@ -728,8 +728,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6503472651252357510}
-  - component: {fileID: -5554404511994238849}
-  - component: {fileID: 2409449956545839173}
+  - component: {fileID: 2049924751790062205}
   m_Layer: 0
   m_Name: LeftHandPrefab
   m_TagString: Untagged
@@ -754,22 +753,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
---- !u!111 &-5554404511994238849
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5839806730945233724}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 0}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
---- !u!95 &2409449956545839173
+--- !u!95 &2049924751790062205
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -779,7 +763,7 @@ Animator:
   m_GameObject: {fileID: 5839806730945233724}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f578927f8b58dec47bdf5e96e8d9f697, type: 2}
+  m_Controller: {fileID: 9100000, guid: f52d16eb7bd170e4183d987610a80d5a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

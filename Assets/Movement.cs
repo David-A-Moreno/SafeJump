@@ -1,0 +1,71 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Movement : MonoBehaviour
+{
+    // La posición objetivo a la que el objeto se moverá
+    [SerializeField]
+    private Vector3 targetPosition;
+
+    // Variable booleana que determina si el objeto debe moverse
+    [SerializeField]
+    private bool move = false;
+
+    // Velocidad de movimiento
+    private float speed;
+
+    //ProgressiveBuild.cs
+    [SerializeField]
+    private GameObject forestManagerReference;
+
+    // Update se llama una vez por frame
+    void Update()
+    {
+        // Si move es true, mueve el objeto hacia la posición objetivo
+        if (move)
+        {
+            MoveTowardsTarget();
+        }
+    }
+
+    private void MoveTowardsTarget()
+    {
+        // Mueve el objeto hacia la posición objetivo a la velocidad especificada
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+        // Si el objeto ha alcanzado la posición objetivo, detén el movimiento
+        if (transform.position == targetPosition)
+        {
+            move = false;
+            forestManagerReference.GetComponent<ProgressiveBuild>().AutomaticMoveTimer();
+        }
+    }
+
+    // Métodos para actualizar los valores desde otros scripts si es necesario
+    public void SetTargetPosition(Vector3 newPosition)
+    {
+        if (!move)
+        {
+            newPosition.z -= 0.6f;
+            newPosition.x += 1.2f;
+            newPosition.y = transform.position.y;
+            targetPosition = newPosition;
+        }
+    }
+
+    public void SetMove(bool shouldMove)
+    {
+        move = shouldMove;
+        forestManagerReference.GetComponent<ProgressiveBuild>().OneStep();
+    }
+
+    public bool GetMove()
+    {
+        return move;
+    }
+
+    public void SetSpeed(float newSpeed)
+    {
+        speed = newSpeed;
+    }
+}
