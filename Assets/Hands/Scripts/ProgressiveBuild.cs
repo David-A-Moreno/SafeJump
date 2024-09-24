@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,6 +52,9 @@ public class ProgressiveBuild : MonoBehaviour
         {
             var buildStructure = structure.GetComponent<BuildStructure>();
             buildStructure.SetPlayerLevel(GetInitialPlayerLevel(structure));
+            bool allThorns = UnityEngine.Random.value < 0.2f;
+            Console.WriteLine(allThorns);
+            buildStructure.SetAllThorns(allThorns);
             buildStructure.BuildRandomStructure();
 
             if (structure == initialStructures[0])
@@ -86,6 +90,10 @@ public class ProgressiveBuild : MonoBehaviour
 
         //Agregarle el nivel
         SetStructurePlayerLevel(randomStructure);
+
+        //Probabilidad del 30% de que la opción sea NO-GO
+        bool allThorns = UnityEngine.Random.value < 0.1f;
+        randomStructure.GetComponent<BuildStructure>().SetAllThorns(allThorns);
 
         //Crear la estructura
         randomStructure.GetComponent<BuildStructure>().BuildRandomStructure();
@@ -164,11 +172,19 @@ public class ProgressiveBuild : MonoBehaviour
     // Corutina para verificar el estado de "move" y esperar el tiempo necesario
     private IEnumerator CheckMoveStatus()
     {
-        float waitTime = (stepsProgress >= 1 && stepsProgress <= 5) ? 4f : 2f;
-        float elapsedTime = 0f;
-
         GameObject nextStructure = GetNextStructure();
         ActivateAllChildren(nextStructure);
+        float waitTime;
+        bool allThorns = nextStructure.GetComponent<BuildStructure>().GetAllThorns();
+        if (allThorns)
+        {
+            waitTime = (stepsProgress >= 1 && stepsProgress <= 5) ? 2.5f : 1f;
+        }
+        else
+        {
+            waitTime = 1.5f;
+        }
+        float elapsedTime = 0f;
 
         while (elapsedTime < waitTime)
         {
@@ -183,7 +199,7 @@ public class ProgressiveBuild : MonoBehaviour
         }
 
         // Busca el GameObject con el tag "FreePath" dentro de la estructura en la posición stepsProgress+1
-        SetAutomaticMovement(nextStructure,"Thorns2");
+        SetAutomaticMovement(nextStructure, "Thorns2", allThorns);
     }
 
     private GameObject GetNextStructure()
@@ -198,25 +214,36 @@ public class ProgressiveBuild : MonoBehaviour
         }
     }
 
-    public void SetAutomaticMovement(GameObject targetStructure, string targetTag)
+    public void SetAutomaticMovement(GameObject targetStructure, string targetTag, bool allThorns)
     {
-        GameObject freePathObject = FindChildWithTag(targetStructure, targetTag);
+        GameObject target;
 
-        if (freePathObject != null)
+        if (allThorns)
         {
-            // Llama al método SetTargetPosition del script Movement
-            freePathObject.SetActive(true);
-            movement.SetTargetPosition(freePathObject.transform.position);
-
-            // Llama a setMove(true) después de ajustar la posición
-            if (stepsProgress > 0)
-            {
-                movement.SetMove(true);
-            }
+            target = FindChildWithTag(targetStructure, "Thorns");
+            Vector3 newPosition = target.transform.position;
+            newPosition.z = 0;
+            movement.SetTargetPosition(newPosition);
+            DeactivateAllChildren(targetStructure);
         }
         else
         {
-            Debug.LogError("No 'FreePath' object found with tag in the structure.");
+            target = FindChildWithTag(targetStructure, targetTag);
+            if (target != null)
+            {
+                // Llama al método SetTargetPosition del script Movement
+                target.SetActive(true);
+                movement.SetTargetPosition(target.transform.position);
+            }
+            else
+            {
+                Debug.LogError("No object found with tag in the structure.");
+            }
+        }
+        // Llama a setMove(true) después de ajustar la posición
+        if (stepsProgress > 0)
+        {
+            movement.SetMove(true);
         }
     }
 
@@ -227,6 +254,16 @@ public class ProgressiveBuild : MonoBehaviour
         {
             // Activamos el GameObject hijo
             child.gameObject.SetActive(true);
+        }
+    }
+
+    public void DeactivateAllChildren(GameObject parent)
+    {
+        // Iteramos sobre cada transform hijo del objeto padre
+        foreach (GameObject child in FindChildrenWithTag(parent, "Thorns"))
+        {
+            // Desactivamos el GameObject hijo
+            child.transform.gameObject.SetActive(false);
         }
     }
 

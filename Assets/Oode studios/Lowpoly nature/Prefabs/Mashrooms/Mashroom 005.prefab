@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3083211531819487401}
   m_Layer: 0
-  m_Name: Mashroom 003
+  m_Name: Mashroom 005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,8 +93,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0e09593af3355f747b292741495a272a, type: 2}
-  - {fileID: 2100000, guid: 0e09593af3355f747b292741495a272a, type: 2}
+  - {fileID: 2100000, guid: fe0fa819bf3d65949bda1fea87c8ab77, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -5,6 +5,7 @@ using UnityEngine;
 public class BuildStructure : MonoBehaviour
 {
     private int playerLevel;
+    private bool allThorns = false;
     public bool isActive = true;
 
     void Awake()
@@ -21,6 +22,16 @@ public class BuildStructure : MonoBehaviour
     public int GetPlayerLevel()
     {
         return playerLevel;
+    }
+
+    public void SetAllThorns(bool allThorns)
+    {
+        this.allThorns = allThorns;
+    }
+
+    public bool GetAllThorns()
+    {
+        return allThorns;
     }
 
     public void BuildRandomStructure()
@@ -101,12 +112,23 @@ public class BuildStructure : MonoBehaviour
 
     void InstantiateLilypads(string[] prefabs, Vector3[] positions, int count)
     {
+        if (allThorns)
+        {
+            InstantiateLilypadsWithoutCorrectOptions(positions);
+        }
+        else
+        {
+            InstantiateLilypadsWithCorrectOptions(prefabs, positions, count);
+        }
+    }
+
+    private void InstantiateLilypadsWithCorrectOptions(string[] prefabs, Vector3[] positions, int count)
+    {
         List<int> availablePositions = new();
         for (int i = 0; i < count; i++)
         {
             availablePositions.Add(i);
         }
-
         GameObject prefab;
 
         //Instanciar el camino libre
@@ -151,6 +173,18 @@ public class BuildStructure : MonoBehaviour
                 availablePositions.RemoveAt(randomIndex);
             }
         }
+    }
+
+    private void InstantiateLilypadsWithoutCorrectOptions(Vector3[] positions)
+    {
+        GameObject prefab;
+
+        for (int i = 0; i < positions.Length; i++)
+        {
+            prefab = InstantiatePrefab("Thorns", positions[i]);
+            prefab.SetActive(isActive);
+        }
+
     }
 
     GameObject InstantiatePrefab(string prefabName, Vector3 position)
