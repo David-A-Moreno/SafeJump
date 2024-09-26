@@ -10,6 +10,7 @@ public class GlowEffect : MonoBehaviour
         Material glow2 = Resources.Load<Material>("Materials/Glow 2");
         Material glow3 = Resources.Load<Material>("Materials/Glow 3");
         Material[] materialsPlant = new Material[] { glow1, glow2, glow3 };
+        Material[] materialBonus = new Material[3];
 
         if (gameObject.CompareTag("FreePath"))
         {
@@ -18,48 +19,33 @@ public class GlowEffect : MonoBehaviour
         }
         else
         {
-            Material material;
-            MeshRenderer meshRenderer;
-
-            if (gameObject.CompareTag("BlueBonus"))
-            {
-                material = Resources.Load<Material>("Materials/Glow Blue Mashroom");
-            }
-            else if (gameObject.CompareTag("GreenBonus"))
-            {
-                material = Resources.Load<Material>("Materials/Glow Green Mashroom");
-            }
-            else if (gameObject.CompareTag("Thorns"))
-            {
-                material = Resources.Load<Material>("Materials/Glow Thorns");
-            }
-            else
-            {
-                material = Resources.Load<Material>("Materials/Glow Thorns2");
-            }
             Transform option = transform.GetChild(0);
             Transform plant = transform.GetChild(1);
+            Material material;
+            MeshRenderer meshRenderer = option.GetComponent<MeshRenderer>();
             
-            //El prefab thorn maneja diferente jerarquia
-            if (!gameObject.CompareTag("Thorns") && !gameObject.CompareTag("Thorns2"))
-            {
-                Transform optionChild = option.GetChild(0);
-                meshRenderer = optionChild.GetComponent<MeshRenderer>();
 
-                if (meshRenderer != null)
+            if (gameObject.CompareTag("BlueBonus") || gameObject.CompareTag("GreenBonus"))
+            {
+                if (gameObject.CompareTag("BlueBonus"))
                 {
-                    meshRenderer.material = material;
+                    material = Resources.Load<Material>("Materials/Glow Blue Mashroom");
                 }
                 else
                 {
-                    Debug.LogWarning("El hijo de 'Bonus' no tiene un componente MeshRenderer.");
+                    material = Resources.Load<Material>("Materials/Glow Green Mashroom");
                 }
-            }
-            else
-            {
-                meshRenderer = option.GetComponent<MeshRenderer>();
                 meshRenderer.material = material;
             }
+            else if (!gameObject.CompareTag("Thorns"))
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    materialBonus[i] = Resources.Load<Material>($"Materials/{gameObject.tag}GlowMaterial{i+1}");
+                }
+                meshRenderer.materials = materialBonus;
+            }
+            
             MeshRenderer plantMeshRender = plant.GetComponent<MeshRenderer>();
             plantMeshRender.materials = materialsPlant;
         }
@@ -71,6 +57,7 @@ public class GlowEffect : MonoBehaviour
         Material material2 = Resources.Load<Material>("Materials/Material 2");
         Material material3 = Resources.Load<Material>("Materials/Material 3");
         Material[] materialsPlant = new Material[] { material1, material2, material3 } ;
+        Material[] materialBonus = new Material[3];
 
         if (gameObject.CompareTag("FreePath"))
         {
@@ -79,45 +66,33 @@ public class GlowEffect : MonoBehaviour
         }
         else
         {
-            Material material;
-            MeshRenderer meshRenderer;
-            if (gameObject.CompareTag("BlueBonus"))
-            {
-                material = Resources.Load<Material>("Materials/Blue Mashroom");
-            }
-            else if (gameObject.CompareTag("GreenBonus"))
-            {
-                material = Resources.Load<Material>("Materials/Green Mashroom");
-            }
-            else if (gameObject.CompareTag("Thorns"))
-            {
-                material = Resources.Load<Material>("Materials/Thorns");
-            }
-            else
-            {
-                material = Resources.Load<Material>("Materials/Thorns2");
-            }
             Transform option = transform.GetChild(0);
             Transform plant = transform.GetChild(1);
-            if (!gameObject.CompareTag("Thorns") && !gameObject.CompareTag("Thorns2"))
-            {
-                Transform optionChild = option.GetChild(0);
-                meshRenderer = optionChild.GetComponent<MeshRenderer>();
+            Material material;
+            MeshRenderer meshRenderer = option.GetComponent<MeshRenderer>();
 
-                if (meshRenderer != null)
+
+            if (gameObject.CompareTag("BlueBonus") || gameObject.CompareTag("GreenBonus"))
+            {
+                if (gameObject.CompareTag("BlueBonus"))
                 {
-                    meshRenderer.material = material;
+                    material = Resources.Load<Material>("Materials/Blue Mashroom");
                 }
                 else
                 {
-                    Debug.LogWarning("El hijo de 'Bonus' no tiene un componente MeshRenderer.");
+                    material = Resources.Load<Material>("Materials/Green Mashroom");
                 }
-            }
-            else
-            {
-                meshRenderer = option.GetComponent<MeshRenderer>();
                 meshRenderer.material = material;
             }
+            else if (!gameObject.CompareTag("Thorns"))
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    materialBonus[i] = Resources.Load<Material>($"Materials/{gameObject.tag}Material{i + 1}");
+                }
+                meshRenderer.materials = materialBonus;
+            }
+
             MeshRenderer plantMeshRender = plant.GetComponent<MeshRenderer>();
             plantMeshRender.materials = materialsPlant;
         }

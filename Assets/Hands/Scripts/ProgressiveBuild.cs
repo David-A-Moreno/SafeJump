@@ -53,8 +53,11 @@ public class ProgressiveBuild : MonoBehaviour
             var buildStructure = structure.GetComponent<BuildStructure>();
             buildStructure.SetPlayerLevel(GetInitialPlayerLevel(structure));
             bool allThorns = UnityEngine.Random.value < 0.2f;
+            if (allThorns && structure != initialStructures[0] && structure != initialStructures[1] && structure != initialStructures[2])
+            {
+                buildStructure.SetAllThorns(allThorns);
+            }
             Console.WriteLine(allThorns);
-            buildStructure.SetAllThorns(allThorns);
             buildStructure.BuildRandomStructure();
 
             if (structure == initialStructures[0])
@@ -91,7 +94,7 @@ public class ProgressiveBuild : MonoBehaviour
         //Agregarle el nivel
         SetStructurePlayerLevel(randomStructure);
 
-        //Probabilidad del 30% de que la opción sea NO-GO
+        //Probabilidad del 10% de que la opción sea NO-GO
         bool allThorns = UnityEngine.Random.value < 0.1f;
         randomStructure.GetComponent<BuildStructure>().SetAllThorns(allThorns);
 
@@ -176,7 +179,7 @@ public class ProgressiveBuild : MonoBehaviour
         ActivateAllChildren(nextStructure);
         float waitTime;
         bool allThorns = nextStructure.GetComponent<BuildStructure>().GetAllThorns();
-        if (allThorns)
+        if (!allThorns)
         {
             waitTime = (stepsProgress >= 1 && stepsProgress <= 5) ? 2.5f : 1f;
         }
@@ -217,7 +220,13 @@ public class ProgressiveBuild : MonoBehaviour
     public void SetAutomaticMovement(GameObject targetStructure, string targetTag, bool allThorns)
     {
         GameObject target;
+        target = FindChildWithTag(targetStructure, "Thorns");
+        Vector3 newPosition = target.transform.position;
+        newPosition.z = 0;
+        movement.SetTargetPosition(newPosition);
+        DeactivateAllChildren(targetStructure);
 
+        /*
         if (allThorns)
         {
             target = FindChildWithTag(targetStructure, "Thorns");
@@ -239,7 +248,7 @@ public class ProgressiveBuild : MonoBehaviour
             {
                 Debug.LogError("No object found with tag in the structure.");
             }
-        }
+        }*/
         // Llama a setMove(true) después de ajustar la posición
         if (stepsProgress > 0)
         {
@@ -260,10 +269,18 @@ public class ProgressiveBuild : MonoBehaviour
     public void DeactivateAllChildren(GameObject parent)
     {
         // Iteramos sobre cada transform hijo del objeto padre
-        foreach (GameObject child in FindChildrenWithTag(parent, "Thorns"))
+        foreach (Transform child in parent.transform)
         {
-            // Desactivamos el GameObject hijo
-            child.transform.gameObject.SetActive(false);
+            GameObject childGameObject = child.gameObject;
+
+            if (childGameObject.CompareTag("Thorns") ||
+                childGameObject.CompareTag("Bonus1") ||
+                childGameObject.CompareTag("Bonus2") ||
+                childGameObject.CompareTag("Bonus3"))
+            {
+                // Desactivamos el GameObject hijo
+                childGameObject.SetActive(false);
+            }
         }
     }
 

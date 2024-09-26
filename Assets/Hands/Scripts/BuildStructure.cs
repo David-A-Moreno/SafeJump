@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BuildStructure : MonoBehaviour
@@ -49,7 +50,7 @@ public class BuildStructure : MonoBehaviour
 
     private void InstantiateLilypadsBasedOnLevel()
     {
-        string[] lilypadPrefabs = { "BlueBonus", "FreePath Variant", "GreenBonus", "Thorns" };
+        string[] lilypadPrefabs = { "Bonus1", "Bonus2", "Bonus3", "Thorns" };
         Vector3[] positions = GetLilypadPositionsForLevel();
         int count = GetLilypadCountForLevel();
 
@@ -131,13 +132,17 @@ public class BuildStructure : MonoBehaviour
         }
         GameObject prefab;
 
+        
         //Instanciar el camino libre
-        int randomIndex = Random.Range(0, availablePositions.Count);
-        int optionPosition = availablePositions[randomIndex];
+        int randomIndex;
+        int optionPosition;
+
+        /*
         //positions[optionPosition].y = 0.8f;
         prefab = InstantiatePrefab("Thorns 2", positions[optionPosition]);
         availablePositions.RemoveAt(randomIndex);
         prefab.SetActive(isActive);
+        */
 
         //Instanciar obstaculo (solo uno)
         randomIndex = Random.Range(0, availablePositions.Count);
@@ -147,8 +152,24 @@ public class BuildStructure : MonoBehaviour
         prefab.SetActive(isActive);
 
         //Instanciar las otras opciones
+        List<string> availableOptions = prefabs.ToList();
+        int randomIndexOption;
+        while (availablePositions.Count != 0)
+        {
+            randomIndexOption = Random.Range(0, availableOptions.Count);
+            randomIndex = Random.Range(0, availablePositions.Count);
+            optionPosition = availablePositions[randomIndex];
+            prefab = InstantiatePrefab(availableOptions[randomIndexOption], positions[optionPosition]);
+            //if (availableOptions[randomIndexOption] != "Thorns")
+            //{
+            availableOptions.RemoveAt(randomIndexOption);
+            //}
+            prefab.SetActive(isActive);
+            availablePositions.RemoveAt(randomIndex);
+        }
 
         //En caso se ser el nivel 0 o 1 solo queda una opcion mas que sera un obstaculo
+        /*
         if (playerLevel == 0 || playerLevel == 1)
         {
             optionPosition = availablePositions[0];
@@ -157,7 +178,7 @@ public class BuildStructure : MonoBehaviour
         }
         else
         {
-            List<string> availableOptions = new() { "Thorns" };
+            List<string> availableOptions = prefabs.ToList();
             int randomIndexOption;
             while (availablePositions.Count != 0)
             {
@@ -165,14 +186,14 @@ public class BuildStructure : MonoBehaviour
                 randomIndex = Random.Range(0, availablePositions.Count);
                 optionPosition = availablePositions[randomIndex];
                 prefab = InstantiatePrefab(availableOptions[randomIndexOption], positions[optionPosition]);
-                if (availableOptions[randomIndexOption] != "Thorns")
-                {
+                //if (availableOptions[randomIndexOption] != "Thorns")
+                //{
                     availableOptions.RemoveAt(randomIndexOption);
-                }
+                //}
                 prefab.SetActive(isActive);
                 availablePositions.RemoveAt(randomIndex);
             }
-        }
+        }*/
     }
 
     private void InstantiateLilypadsWithoutCorrectOptions(Vector3[] positions)
