@@ -12,6 +12,8 @@ public class Movement : MonoBehaviour
     [SerializeField]
     private bool move = false;
 
+    private bool waitForObjectDestruction = false;
+
     // Velocidad de movimiento
     private float speed;
 
@@ -23,7 +25,7 @@ public class Movement : MonoBehaviour
     void Update()
     {
         // Si move es true, mueve el objeto hacia la posición objetivo
-        if (move)
+        if (move && !waitForObjectDestruction)
         {
             MoveTowardsTarget();
         }
@@ -37,6 +39,7 @@ public class Movement : MonoBehaviour
         if (transform.position == targetPosition)
         {
             move = false;
+            waitForObjectDestruction = false;
             forestManagerReference.GetComponent<ProgressiveBuild>().AutomaticMoveTimer();
         }
     }
@@ -53,9 +56,15 @@ public class Movement : MonoBehaviour
         }
     }
 
+    public void WaitForDestruction ()
+    {
+        waitForObjectDestruction = true;
+    }
+
     public void SetMove(bool shouldMove)
     {
         move = shouldMove;
+        waitForObjectDestruction = false;
         forestManagerReference.GetComponent<ProgressiveBuild>().OneStep();
     }
 

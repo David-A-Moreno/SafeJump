@@ -191,6 +191,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8938619514880393869}
     m_Modifications:
+    - target: {fileID: 5399507104273335972, guid: 82bd60092ede4c24db1d8df98dce230f, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9f8659906740dcf408dbaf7dde812678, type: 2}
+    - target: {fileID: 5399507104273335972, guid: 82bd60092ede4c24db1d8df98dce230f, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 68ade44df5e30d449b5dc3b56f11c8b5, type: 2}
     - target: {fileID: 5903686306676254577, guid: 82bd60092ede4c24db1d8df98dce230f, type: 3}
       propertyPath: m_Name
       value: Thorn
@@ -269,6 +277,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8938619514880393869}
     m_Modifications:
+    - target: {fileID: 5399507104273335972, guid: 82bd60092ede4c24db1d8df98dce230f, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9f8659906740dcf408dbaf7dde812678, type: 2}
+    - target: {fileID: 5399507104273335972, guid: 82bd60092ede4c24db1d8df98dce230f, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 68ade44df5e30d449b5dc3b56f11c8b5, type: 2}
     - target: {fileID: 5903686306676254577, guid: 82bd60092ede4c24db1d8df98dce230f, type: 3}
       propertyPath: m_Name
       value: Thorn (1)

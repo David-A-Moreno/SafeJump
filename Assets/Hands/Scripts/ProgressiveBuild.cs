@@ -20,6 +20,9 @@ public class ProgressiveBuild : MonoBehaviour
     [SerializeField]
     private Movement movement; //Movement.cs
 
+    [SerializeField]
+    private Effects effects; //Effects.cs
+
     private int stepsProgress = 0;
     private int destroyedStructures = 0;
     Vector3 position = new(0, 0, 0);
@@ -224,7 +227,9 @@ public class ProgressiveBuild : MonoBehaviour
         Vector3 newPosition = target.transform.position;
         newPosition.z = 0;
         movement.SetTargetPosition(newPosition);
-        DeactivateAllChildren(targetStructure);
+        effects.DestroyOptionEffect(targetStructure);
+        movement.WaitForDestruction();
+        //DeactivateAllChildren(targetStructure);
 
         /*
         if (allThorns)
@@ -250,6 +255,18 @@ public class ProgressiveBuild : MonoBehaviour
             }
         }*/
         // Llama a setMove(true) después de ajustar la posición
+        StartCoroutine(WaitAndExecute(targetStructure));
+    }
+
+    private IEnumerator WaitAndExecute(GameObject targetStructure)
+    {
+        // Destruir el efecto
+        effects.DestroyOptionEffect(targetStructure);
+
+        // Esperar 2 segundos
+        yield return new WaitForSeconds(0.5f);
+
+        // Aquí continúa el código que se ejecutará después de la espera de 2 segundos
         if (stepsProgress > 0)
         {
             movement.SetMove(true);
