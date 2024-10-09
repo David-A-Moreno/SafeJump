@@ -42,4 +42,43 @@ public class Effects : MonoBehaviour
             }
         }
     }
+
+    public void AppearOptionEffect(GameObject parent)
+    {
+        // Iterar sobre todos los hijos del GameObject
+        foreach (Transform child in parent.transform)
+        {
+            if (child.CompareTag("Thorns") ||
+                child.CompareTag("Bonus1") ||
+                child.CompareTag("Bonus2") ||
+                child.CompareTag("Bonus3"))
+            {
+                // Activar el objeto hijo
+                child.gameObject.SetActive(true);
+
+                // Iniciar la animación de aparición
+                StartCoroutine(ScaleUp(child));
+            }
+        }
+    }
+
+    // Coroutine para escalar el objeto progresivamente
+    private IEnumerator ScaleUp(Transform child)
+    {
+        Vector3 initialScale = new Vector3(0.3f, 0.3f, 0.3f); // Escala inicial
+        Vector3 targetScale = Vector3.one; // Escala objetivo (1, 1, 1) en todos los ejes
+        float duration = 0.15f; // Duración de la animación en segundos
+        float elapsed = 0.0f;
+
+        // Escalar progresivamente desde initialScale hasta targetScale en el tiempo 'duration'
+        while (elapsed < duration)
+        {
+            child.localScale = Vector3.Lerp(initialScale, targetScale, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Asegurarse de que la escala final sea exactamente la objetivo
+        child.localScale = targetScale;
+    }
 }

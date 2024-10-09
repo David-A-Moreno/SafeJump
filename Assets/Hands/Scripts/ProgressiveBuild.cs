@@ -65,7 +65,8 @@ public class ProgressiveBuild : MonoBehaviour
 
             if (structure == initialStructures[0])
             {
-                ActivateAllChildren(structure);
+                //ActivateAllChildren(structure);
+                effects.AppearOptionEffect(structure);
             }
 
             structure.transform.position = targetPosition;
@@ -179,12 +180,13 @@ public class ProgressiveBuild : MonoBehaviour
     private IEnumerator CheckMoveStatus()
     {
         GameObject nextStructure = GetNextStructure();
-        ActivateAllChildren(nextStructure);
+        //ActivateAllChildren(nextStructure);
+        effects.AppearOptionEffect(nextStructure);
         float waitTime;
         bool allThorns = nextStructure.GetComponent<BuildStructure>().GetAllThorns();
         if (!allThorns)
         {
-            waitTime = (stepsProgress >= 1 && stepsProgress <= 5) ? 2.5f : 1f;
+            waitTime = (stepsProgress >= 1 && stepsProgress <= 5) ? 2f : 0.8f;
         }
         else
         {
@@ -229,32 +231,6 @@ public class ProgressiveBuild : MonoBehaviour
         movement.SetTargetPosition(newPosition);
         effects.DestroyOptionEffect(targetStructure);
         movement.WaitForDestruction();
-        //DeactivateAllChildren(targetStructure);
-
-        /*
-        if (allThorns)
-        {
-            target = FindChildWithTag(targetStructure, "Thorns");
-            Vector3 newPosition = target.transform.position;
-            newPosition.z = 0;
-            movement.SetTargetPosition(newPosition);
-            DeactivateAllChildren(targetStructure);
-        }
-        else
-        {
-            target = FindChildWithTag(targetStructure, targetTag);
-            if (target != null)
-            {
-                // Llama al método SetTargetPosition del script Movement
-                target.SetActive(true);
-                movement.SetTargetPosition(target.transform.position);
-            }
-            else
-            {
-                Debug.LogError("No object found with tag in the structure.");
-            }
-        }*/
-        // Llama a setMove(true) después de ajustar la posición
         StartCoroutine(WaitAndExecute(targetStructure));
     }
 

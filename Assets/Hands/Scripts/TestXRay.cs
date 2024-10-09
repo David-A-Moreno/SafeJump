@@ -25,10 +25,15 @@ public class TestXRay : MonoBehaviour
             if (interactable != null)
             {
                 moveProvider.SetTargetPosition(hit.transform.position);
-                moveProvider.SetSpeed(36);
                 moveProvider.SetMove(true);
             }
         }
+    }
+
+    public void MostrarInfo(SelectEnterEventArgs args)
+    {
+        GameObject selectedObject = args.interactableObject.transform.gameObject;
+        Debug.Log("Objeto interactuado: " + selectedObject.name);
     }
 
     void OnDestroy()

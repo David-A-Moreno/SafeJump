@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour
     private bool waitForObjectDestruction = false;
 
     // Velocidad de movimiento
-    private float speed;
+    private float speed = 45;
 
     //ProgressiveBuild.cs
     [SerializeField]
@@ -71,10 +71,5 @@ public class Movement : MonoBehaviour
     public bool GetMove()
     {
         return move;
-    }
-
-    public void SetSpeed(float newSpeed)
-    {
-        speed = newSpeed;
     }
 }
