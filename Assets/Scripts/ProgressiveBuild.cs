@@ -82,7 +82,8 @@ public class ProgressiveBuild : MonoBehaviour
     private int GetInitialPlayerLevel(GameObject structure)
     {
         int index = System.Array.IndexOf(initialStructures, structure);
-        return (index < 5) ? 1 : 3;
+        //return (index < 5) ? 1 : 3;
+        return 1;
     }
 
     private void MoveCloud()
@@ -99,7 +100,7 @@ public class ProgressiveBuild : MonoBehaviour
         if (randomStructure == null) return;
 
         //Agregarle el nivel
-        SetStructurePlayerLevel(randomStructure);
+        //SetStructurePlayerLevel(randomStructure);
 
         //Probabilidad del 10% de que la opción sea NO-GO
         bool allThorns = UnityEngine.Random.value < 0.1f;
@@ -128,11 +129,11 @@ public class ProgressiveBuild : MonoBehaviour
         var buildStructure = structure.GetComponent<BuildStructure>();
         if (stepsProgress >= 1 && stepsProgress <= 5)
         {
-            buildStructure.SetPlayerLevel(1);
+            buildStructure.SetPlayerLevel(5);
         }
         else
         {
-            buildStructure.SetPlayerLevel(1);
+            buildStructure.SetPlayerLevel(6);
         }
     }
 
@@ -189,7 +190,8 @@ public class ProgressiveBuild : MonoBehaviour
         bool allThorns = nextStructure.GetComponent<BuildStructure>().GetAllThorns();
         if (!allThorns)
         {
-            waitTime = (stepsProgress >= 1 && stepsProgress <= 5) ? 2f : 0.8f;
+            //waitTime = (stepsProgress >= 1 && stepsProgress <= 5) ? 2f : 0.8f;
+            waitTime = 0.8f;
         }
         else
         {
@@ -228,7 +230,21 @@ public class ProgressiveBuild : MonoBehaviour
     public void SetAutomaticMovement(GameObject targetStructure, string targetTag, bool allThorns)
     {
         GameObject target;
-        target = FindChildWithTag(targetStructure, "Thorns");
+        if (allThorns)
+        {
+            target = FindChildWithTag(targetStructure, "Thorns");
+        }
+        else
+        {
+            if (FindChildWithTag(targetStructure, "Bonus1") != null)
+            {
+                target = FindChildWithTag(targetStructure, "Bonus1");
+            }
+            else
+            {
+                target = FindChildWithTag(targetStructure, "Bonus2");
+            }
+        }
         Vector3 newPosition = target.transform.position;
         newPosition.z = 0;
         movement.SetTargetPosition(newPosition);
