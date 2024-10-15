@@ -17,9 +17,13 @@ public class Movement : MonoBehaviour
     // Velocidad de movimiento
     private float speed = 45;
 
+    private bool gameOver = false;
     //ProgressiveBuild.cs
     [SerializeField]
     private GameObject forestManagerReference;
+
+    [SerializeField]
+    private GameOverManager gameOverScript;
 
     // Update se llama una vez por frame
     void Update()
@@ -40,7 +44,15 @@ public class Movement : MonoBehaviour
         {
             move = false;
             waitForObjectDestruction = false;
-            forestManagerReference.GetComponent<ProgressiveBuild>().AutomaticMoveTimer();
+            if (gameOver)
+            {
+                gameOverScript.GameOver(targetPosition, false);
+            }
+            else
+            {
+                forestManagerReference.GetComponent<ProgressiveBuild>().AutomaticMoveTimer();
+
+            }
         }
     }
 
@@ -68,6 +80,10 @@ public class Movement : MonoBehaviour
         forestManagerReference.GetComponent<ProgressiveBuild>().OneStep();
     }
 
+    public void SetGameOver()
+    {
+        gameOver = true;
+    }
     public bool GetMove()
     {
         return move;

@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Effects : MonoBehaviour
 {
+    private bool inGame = true;
+
+    public void GameOver()
+    {
+        inGame = false;
+    }
+
     public void DestroyOptionEffect(GameObject parent)
     {
         // Iterar sobre todos los hijos del GameObject
@@ -45,19 +52,22 @@ public class Effects : MonoBehaviour
 
     public void AppearOptionEffect(GameObject parent)
     {
-        // Iterar sobre todos los hijos del GameObject
-        foreach (Transform child in parent.transform)
+        if (inGame)
         {
-            if (child.CompareTag("Thorns") ||
-                child.CompareTag("Bonus1") ||
-                child.CompareTag("Bonus2") ||
-                child.CompareTag("Bonus3"))
+            // Iterar sobre todos los hijos del GameObject
+            foreach (Transform child in parent.transform)
             {
-                // Activar el objeto hijo
-                child.gameObject.SetActive(true);
+                if (child.CompareTag("Thorns") ||
+                    child.CompareTag("Bonus1") ||
+                    child.CompareTag("Bonus2") ||
+                    child.CompareTag("Bonus3"))
+                {
+                    // Activar el objeto hijo
+                    child.gameObject.SetActive(true);
 
-                // Iniciar la animación de aparición
-                StartCoroutine(ScaleUp(child));
+                    // Iniciar la animación de aparición
+                    StartCoroutine(ScaleUp(child));
+                }
             }
         }
     }

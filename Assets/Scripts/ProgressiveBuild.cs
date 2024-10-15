@@ -23,6 +23,9 @@ public class ProgressiveBuild : MonoBehaviour
     [SerializeField]
     private Effects effects; //Effects.cs
 
+    [SerializeField]
+    private GameOverManager gameOverScript;
+
     private int stepsProgress = 0;
     private int destroyedStructures = 0;
     Vector3 position = new(0, 0, 0);
@@ -125,11 +128,11 @@ public class ProgressiveBuild : MonoBehaviour
         var buildStructure = structure.GetComponent<BuildStructure>();
         if (stepsProgress >= 1 && stepsProgress <= 5)
         {
-            buildStructure.SetPlayerLevel(5);
+            buildStructure.SetPlayerLevel(1);
         }
         else
         {
-            buildStructure.SetPlayerLevel(6);
+            buildStructure.SetPlayerLevel(1);
         }
     }
 
@@ -231,10 +234,10 @@ public class ProgressiveBuild : MonoBehaviour
         movement.SetTargetPosition(newPosition);
         effects.DestroyOptionEffect(targetStructure);
         movement.WaitForDestruction();
-        StartCoroutine(WaitAndExecute(targetStructure));
+        StartCoroutine(WaitAndExecute(targetStructure, allThorns));
     }
 
-    private IEnumerator WaitAndExecute(GameObject targetStructure)
+    private IEnumerator WaitAndExecute(GameObject targetStructure, bool allThorns)
     {
         // Destruir el efecto
         effects.DestroyOptionEffect(targetStructure);
@@ -245,7 +248,14 @@ public class ProgressiveBuild : MonoBehaviour
         // Aquí continúa el código que se ejecutará después de la espera de 2 segundos
         if (stepsProgress > 0)
         {
-            movement.SetMove(true);
+            if (allThorns)
+            {
+                movement.SetMove(true);
+            }
+            else
+            {
+                gameOverScript.GameOver(targetStructure.transform.position, true);
+            }
         }
     }
 

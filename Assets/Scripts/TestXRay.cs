@@ -26,6 +26,10 @@ public class TestXRay : MonoBehaviour
             {
                 moveProvider.SetTargetPosition(hit.transform.position);
                 moveProvider.SetMove(true);
+                if (hit.transform.CompareTag("Thorns"))
+                {
+                    moveProvider.SetGameOver();
+                }
             }
         }
     }

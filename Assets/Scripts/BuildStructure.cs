@@ -50,7 +50,7 @@ public class BuildStructure : MonoBehaviour
 
     private void InstantiateLilypadsBasedOnLevel()
     {
-        string[] lilypadPrefabs = { "Bonus1", "Bonus2", "Bonus3", "Thorns" };
+        string[] lilypadPrefabs = { "Bonus1", "Bonus2", "Bonus3" };
         Vector3[] positions = GetLilypadPositionsForLevel();
         int count = GetLilypadCountForLevel();
 
@@ -145,11 +145,11 @@ public class BuildStructure : MonoBehaviour
         */
 
         //Instanciar obstaculo (solo uno)
-        randomIndex = Random.Range(0, availablePositions.Count);
+        /*randomIndex = Random.Range(0, availablePositions.Count);
         optionPosition = availablePositions[randomIndex];
         prefab = InstantiatePrefab("Thorns", positions[optionPosition]);
         availablePositions.RemoveAt(randomIndex);
-        prefab.SetActive(isActive);
+        prefab.SetActive(isActive);*/
 
         //Instanciar las otras opciones
         List<string> availableOptions = prefabs.ToList();
@@ -162,7 +162,7 @@ public class BuildStructure : MonoBehaviour
             prefab = InstantiatePrefab(availableOptions[randomIndexOption], positions[optionPosition]);
             //if (availableOptions[randomIndexOption] != "Thorns")
             //{
-            availableOptions.RemoveAt(randomIndexOption);
+            //availableOptions.RemoveAt(randomIndexOption);
             //}
             prefab.SetActive(isActive);
             availablePositions.RemoveAt(randomIndex);
