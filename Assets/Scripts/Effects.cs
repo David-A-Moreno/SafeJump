@@ -77,7 +77,7 @@ public class Effects : MonoBehaviour
     {
         Vector3 initialScale = new Vector3(0.3f, 0.3f, 0.3f); // Escala inicial
         Vector3 targetScale = Vector3.one; // Escala objetivo (1, 1, 1) en todos los ejes
-        float duration = 0.15f; // Duración de la animación en segundos
+        float duration = 0.08f; // Duración de la animación en segundos
         float elapsed = 0.0f;
 
         // Escalar progresivamente desde initialScale hasta targetScale en el tiempo 'duration'

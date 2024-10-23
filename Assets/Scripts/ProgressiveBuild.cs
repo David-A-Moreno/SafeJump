@@ -26,6 +26,9 @@ public class ProgressiveBuild : MonoBehaviour
     [SerializeField]
     private GameOverManager gameOverScript;
 
+    [SerializeField]
+    private GameStartUI gameStartUI;
+
     private int stepsProgress = 0;
     private int destroyedStructures = 0;
     Vector3 position = new(0, 0, 0);
@@ -44,6 +47,7 @@ public class ProgressiveBuild : MonoBehaviour
     void Start()
     {
         InitializeStructures();
+        gameStartUI.showGameStartUI();
     }
 
     void Update()
@@ -66,10 +70,9 @@ public class ProgressiveBuild : MonoBehaviour
             Console.WriteLine(allThorns);
             buildStructure.BuildRandomStructure();
 
-            if (structure == initialStructures[0])
+            if (!gameStartUI.getFirstGame())
             {
-                //ActivateAllChildren(structure);
-                effects.AppearOptionEffect(structure);
+                appearFirstOptions();
             }
 
             structure.transform.position = targetPosition;
@@ -77,6 +80,11 @@ public class ProgressiveBuild : MonoBehaviour
             targetPosition.x -= positionOffsetX;
         }
         position = targetPosition;
+    }
+
+    public void appearFirstOptions()
+    {
+        effects.AppearOptionEffect(initialStructures[0]);
     }
 
     private int GetInitialPlayerLevel(GameObject structure)
@@ -190,8 +198,20 @@ public class ProgressiveBuild : MonoBehaviour
         bool allThorns = nextStructure.GetComponent<BuildStructure>().GetAllThorns();
         if (!allThorns)
         {
+            if (stepsProgress>= 1 && stepsProgress <= 5)
+            {
+                waitTime = 1.3f;
+            }
+            else if (stepsProgress > 5 && stepsProgress <= 10)
+            {
+                waitTime = 1f;
+            }
+            else
+            {
+                waitTime = 0.65f;
+            }
             //waitTime = (stepsProgress >= 1 && stepsProgress <= 5) ? 2f : 0.8f;
-            waitTime = 0.8f;
+            //waitTime = 0.5f;
         }
         else
         {
@@ -240,9 +260,13 @@ public class ProgressiveBuild : MonoBehaviour
             {
                 target = FindChildWithTag(targetStructure, "Bonus1");
             }
-            else
+            else if (FindChildWithTag(targetStructure, "Bonus2") != null)
             {
                 target = FindChildWithTag(targetStructure, "Bonus2");
+            }
+            else
+            {
+                target = FindChildWithTag(targetStructure, "Bonus3");
             }
         }
         Vector3 newPosition = target.transform.position;

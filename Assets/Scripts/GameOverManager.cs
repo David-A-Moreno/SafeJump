@@ -8,6 +8,12 @@ public class GameOverManager : MonoBehaviour
     [SerializeField]
     private GameObject GameOverUI;
 
+    [SerializeField]
+    private ProgressiveBuild progressiveBuild;
+
+    [SerializeField]
+    private GameStartUI gameStartUI;
+
     public void PlayAgain()
     {
         // Vuelve a cargar la escena actual
@@ -16,6 +22,7 @@ public class GameOverManager : MonoBehaviour
 
     public void GameOver(Vector3 position, bool timeLimitReached)
     {
+        gameStartUI.setFirstGame(false);
         GameOverUI.SetActive(true);
         Vector3 uiPosition;
         if (timeLimitReached)

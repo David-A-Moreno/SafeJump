@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour
     private bool waitForObjectDestruction = false;
 
     // Velocidad de movimiento
-    private float speed = 45;
+    private float speed = 55;
 
     private bool gameOver = false;
     //ProgressiveBuild.cs
