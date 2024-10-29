@@ -132,27 +132,19 @@ public class BuildStructure : MonoBehaviour
         }
         GameObject prefab;
 
-        
         //Instanciar el camino libre
         int randomIndex;
         int optionPosition;
 
-        /*
-        //positions[optionPosition].y = 0.8f;
-        prefab = InstantiatePrefab("Thorns 2", positions[optionPosition]);
-        availablePositions.RemoveAt(randomIndex);
-        prefab.SetActive(isActive);
-        */
-
-        //Instanciar obstaculo (solo uno)
-        /*randomIndex = Random.Range(0, availablePositions.Count);
-        optionPosition = availablePositions[randomIndex];
-        prefab = InstantiatePrefab("Thorns", positions[optionPosition]);
-        availablePositions.RemoveAt(randomIndex);
-        prefab.SetActive(isActive);*/
-
         //Instanciar las otras opciones
         List<string> availableOptions = prefabs.ToList();
+
+        // Probabilidad del 30% para mantener el "Bonus1"
+        if (Random.Range(0f, 1f) > 0.3f)
+        {
+            availableOptions.Remove("Bonus1");
+        }
+
         int randomIndexOption;
         while (availablePositions.Count != 0)
         {
@@ -167,33 +159,6 @@ public class BuildStructure : MonoBehaviour
             prefab.SetActive(isActive);
             availablePositions.RemoveAt(randomIndex);
         }
-
-        //En caso se ser el nivel 0 o 1 solo queda una opcion mas que sera un obstaculo
-        /*
-        if (playerLevel == 0 || playerLevel == 1)
-        {
-            optionPosition = availablePositions[0];
-            prefab = InstantiatePrefab("Thorns", positions[optionPosition]);
-            prefab.SetActive(isActive);
-        }
-        else
-        {
-            List<string> availableOptions = prefabs.ToList();
-            int randomIndexOption;
-            while (availablePositions.Count != 0)
-            {
-                randomIndexOption = Random.Range(0, availableOptions.Count);
-                randomIndex = Random.Range(0, availablePositions.Count);
-                optionPosition = availablePositions[randomIndex];
-                prefab = InstantiatePrefab(availableOptions[randomIndexOption], positions[optionPosition]);
-                //if (availableOptions[randomIndexOption] != "Thorns")
-                //{
-                    availableOptions.RemoveAt(randomIndexOption);
-                //}
-                prefab.SetActive(isActive);
-                availablePositions.RemoveAt(randomIndex);
-            }
-        }*/
     }
 
     private void InstantiateLilypadsWithoutCorrectOptions(Vector3[] positions)

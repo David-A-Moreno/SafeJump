@@ -11,6 +11,8 @@ public class TestXRay : MonoBehaviour
     [SerializeField] private XRBaseController xrController;
     [SerializeField] private float moveSpeed = 6f;
     [SerializeField] private Movement moveProvider;//Movement.cs
+    [SerializeField] private GameOverManager gameOver;
+    [SerializeField] private UIPointsManager uiPointsManager;
 
     private void OnEnable()
     {
@@ -26,9 +28,28 @@ public class TestXRay : MonoBehaviour
             {
                 moveProvider.SetTargetPosition(hit.transform.position);
                 moveProvider.SetMove(true);
+                int points = 0;
                 if (hit.transform.CompareTag("Thorns"))
                 {
                     moveProvider.SetGameOver();
+                }
+                else if (hit.transform.CompareTag("Bonus1"))
+                {
+                    points = 20;
+                }
+                else if (hit.transform.CompareTag("Bonus2"))
+                {
+                    points = 8;
+                }
+                else if (hit.transform.CompareTag("Bonus3"))
+                {
+                    points = 5;
+                }
+
+                if (points != 0)
+                {
+                    gameOver.increasePoints(points);
+                    uiPointsManager.ShowPointsUI(hit.point, points);
                 }
             }
         }
@@ -44,5 +65,4 @@ public class TestXRay : MonoBehaviour
     {
         triggerAction.action.performed -= OnTriggerActivated;
     }
-
 }
