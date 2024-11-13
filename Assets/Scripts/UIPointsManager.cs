@@ -4,6 +4,21 @@ using TMPro;
 
 public class UIPointsManager : MonoBehaviour
 {
+
+    private Movement movement;
+
+    private float speedX;
+
+    private void Awake()
+    {
+        movement = FindObjectOfType<Movement>();
+    }
+
+    private void Start()
+    {
+        speedX = movement.GetSpeed();
+    }
+
     public void ShowPointsUI(Vector3 position, int points)
     {
         // Cargar el prefab desde Resources
@@ -27,13 +42,13 @@ public class UIPointsManager : MonoBehaviour
 
     private IEnumerator MoveUIPoints(GameObject uiInstance)
     {
+        speedX = movement.GetSpeed();
         // Definir las posiciones objetivo en los ejes X e Y
         Vector3 targetPosition = uiInstance.transform.position;
         targetPosition.x -= 11.28f; // Posición objetivo en el eje X
         targetPosition.y = 2f;      // Posición objetivo en el eje Y
 
         // Velocidades de movimiento para cada eje
-        float speedX = 55f;
         float speedY = 2f;
 
         // Mover el objeto hasta que alcance las posiciones objetivo en X e Y

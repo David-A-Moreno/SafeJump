@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,8 +29,15 @@ public class ProgressiveBuild : MonoBehaviour
     [SerializeField]
     private GameStartUI gameStartUI;
 
+    [SerializeField]
+    private LilyPadManager lilyPadManager;
+
+    private GameObject lastStructure = null;
+
     private int stepsProgress = 0;
+    private int structuresCreated = 0;
     private int destroyedStructures = 0;
+    private int playerLevel = 1;
     Vector3 position = new(0, 0, 0);
     Vector3 resetPosition = new(0, 0, 0);
 
@@ -61,7 +68,11 @@ public class ProgressiveBuild : MonoBehaviour
         foreach (var structure in initialStructures)
         {
             var buildStructure = structure.GetComponent<BuildStructure>();
-            buildStructure.SetPlayerLevel(GetInitialPlayerLevel(structure));
+            if (playerLevel != GetInitialPlayerLevel(structure))
+            {
+                playerLevel = GetInitialPlayerLevel(structure);
+                lilyPadManager.InitializeLevel(playerLevel);
+            }
             bool allThorns = UnityEngine.Random.value < 0.2f;
             if (allThorns && structure != initialStructures[0] && structure != initialStructures[1] && structure != initialStructures[2])
             {
@@ -80,6 +91,7 @@ public class ProgressiveBuild : MonoBehaviour
             targetPosition.x -= positionOffsetX;
         }
         position = targetPosition;
+        structuresCreated = 13;
     }
 
     public void appearFirstOptions()
@@ -90,8 +102,7 @@ public class ProgressiveBuild : MonoBehaviour
     private int GetInitialPlayerLevel(GameObject structure)
     {
         int index = System.Array.IndexOf(initialStructures, structure);
-        //return (index < 5) ? 1 : 3;
-        return 1;
+        return (index < 11) ? 1 : 2;
     }
 
     private void MoveCloud()
@@ -102,16 +113,16 @@ public class ProgressiveBuild : MonoBehaviour
     public void OneStep()
     {
         stepsProgress++;
-
+        structuresCreated++;
         //Inicializar nueva estructura
         GameObject randomStructure = InstantiateStructure();
         if (randomStructure == null) return;
 
-        //Agregarle el nivel
-        //SetStructurePlayerLevel(randomStructure);
+        //Agregar nivel al juego
+        SetPlayerLevel();
 
-        //Probabilidad del 10% de que la opciÛn sea NO-GO
-        bool allThorns = UnityEngine.Random.value < 0.1f;
+        //Probabilidad del 10% de que la opcion sea NO-GO
+        bool allThorns = UnityEngine.Random.value < 0.15f;
         randomStructure.GetComponent<BuildStructure>().SetAllThorns(allThorns);
 
         //Crear la estructura
@@ -130,29 +141,52 @@ public class ProgressiveBuild : MonoBehaviour
 
         //Guardar la posicion de la siguiente estructura
         position.x -= positionOffsetX;
+
+        if (allThorns && playerLevel > 3)
+        {
+            // Cambia el patr√≥n y escala de nen√∫fares al encontrar una opci√≥n "no-go"
+            lilyPadManager.InitializeLevel(playerLevel);
+        }
+
     }
 
-    private void SetStructurePlayerLevel(GameObject structure)
+    private void SetPlayerLevel()
     {
-        var buildStructure = structure.GetComponent<BuildStructure>();
-        if (stepsProgress >= 1 && stepsProgress <= 5)
+        int newLevel;
+
+        if (structuresCreated >= 31 && structuresCreated < 41)
         {
-            buildStructure.SetPlayerLevel(5);
+            newLevel = 4;
+        }
+        else if (structuresCreated >= 21 && structuresCreated < 31)
+        {
+            newLevel = 3;
+        }
+        else if (structuresCreated >= 11 && structuresCreated < 21)
+        {
+            newLevel = 2;
         }
         else
         {
-            buildStructure.SetPlayerLevel(6);
+            newLevel = 5;
+        }
+
+        if (playerLevel != newLevel)
+        {
+            playerLevel = newLevel;
+            lilyPadManager.InitializeLevel(playerLevel);
         }
     }
 
+
     public void AutomaticMoveTimer()
     {
-        // Cancela la corutina actual si est· en ejecuciÛn
+        // Cancela la corutina actual si estÔøΩ en ejecuciÔøΩn
         if (currentCoroutine != null)
         {
             StopCoroutine(currentCoroutine);
         }
-        // Inicia la corutina que controla el tiempo de espera seg˙n el stepsProgress
+        // Inicia la corutina que controla el tiempo de espera segÔøΩn el stepsProgress
         StartCoroutine(CheckMoveStatus());
     }
 
@@ -172,7 +206,7 @@ public class ProgressiveBuild : MonoBehaviour
         }
     }
 
-    // MÈtodo para eliminar la primera estructura de la lista
+    // MÔøΩtodo para eliminar la primera estructura de la lista
     public void RemoveFirstStructure()
     {
         if (structures.Count > 0)
@@ -198,20 +232,29 @@ public class ProgressiveBuild : MonoBehaviour
         bool allThorns = nextStructure.GetComponent<BuildStructure>().GetAllThorns();
         if (!allThorns)
         {
-            if (stepsProgress>= 1 && stepsProgress <= 5)
+            if (playerLevel == 1) 
             {
-                waitTime = 1.3f;
+                waitTime = 2.5f;
+                movement.SetSpeed(20);
             }
-            else if (stepsProgress > 5 && stepsProgress <= 10)
+            else if (playerLevel == 2)
+            {
+                waitTime = 1.5f;
+                movement.SetSpeed(28);
+            }
+            else if (playerLevel == 3)
             {
                 waitTime = 1f;
+                movement.SetSpeed(40);
             }
             else
             {
                 waitTime = 0.65f;
+                movement.SetSpeed(55);
             }
             //waitTime = (stepsProgress >= 1 && stepsProgress <= 5) ? 2f : 0.8f;
             //waitTime = 0.5f;
+
         }
         else
         {
@@ -224,14 +267,14 @@ public class ProgressiveBuild : MonoBehaviour
             // Si "move" es true, se cancela la corutina
             if (movement.GetMove())
             {
-                yield break; // Termina la corutina si "move" est· en true
+                yield break; // Termina la corutina si "move" estÔøΩ en true
             }
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        // Busca el GameObject con el tag "FreePath" dentro de la estructura en la posiciÛn stepsProgress+1
+        // Busca el GameObject con el tag "FreePath" dentro de la estructura en la posiciÔøΩn stepsProgress+1
         SetAutomaticMovement(nextStructure, "Thorns2", allThorns);
     }
 
@@ -268,6 +311,7 @@ public class ProgressiveBuild : MonoBehaviour
             {
                 target = FindChildWithTag(targetStructure, "Bonus3");
             }
+            lastStructure = targetStructure;
         }
         Vector3 newPosition = target.transform.position;
         newPosition.z = 0;
@@ -285,7 +329,7 @@ public class ProgressiveBuild : MonoBehaviour
         // Esperar 2 segundos
         yield return new WaitForSeconds(0.5f);
 
-        // AquÌ contin˙a el cÛdigo que se ejecutar· despuÈs de la espera de 2 segundos
+        // AquÔøΩ continÔøΩa el cÔøΩdigo que se ejecutarÔøΩ despuÔøΩs de la espera de 2 segundos
         if (stepsProgress > 0)
         {
             if (allThorns)
@@ -309,21 +353,25 @@ public class ProgressiveBuild : MonoBehaviour
         }
     }
 
-    public void DeactivateAllChildren(GameObject parent)
+    public void DeactivateAllChildren()
     {
-        // Iteramos sobre cada transform hijo del objeto padre
-        foreach (Transform child in parent.transform)
+        if (lastStructure != null)
         {
-            GameObject childGameObject = child.gameObject;
-
-            if (childGameObject.CompareTag("Thorns") ||
-                childGameObject.CompareTag("Bonus1") ||
-                childGameObject.CompareTag("Bonus2") ||
-                childGameObject.CompareTag("Bonus3"))
+            // Iteramos sobre cada transform hijo del objeto padre
+            foreach (Transform child in lastStructure.transform)
             {
-                // Desactivamos el GameObject hijo
-                childGameObject.SetActive(false);
+                GameObject childGameObject = child.gameObject;
+
+                if (childGameObject.CompareTag("Thorns") ||
+                    childGameObject.CompareTag("Bonus1") ||
+                    childGameObject.CompareTag("Bonus2") ||
+                    childGameObject.CompareTag("Bonus3"))
+                {
+                    // Desactivamos el GameObject hijo
+                    childGameObject.SetActive(false);
+                }
             }
+            lastStructure = null;
         }
     }
 
@@ -348,7 +396,7 @@ public class ProgressiveBuild : MonoBehaviour
         return childrenWithTag.ToArray();
     }
 
-    // MÈtodo auxiliar para buscar un hijo por tag
+    // MÔøΩtodo auxiliar para buscar un hijo por tag
     private GameObject FindChildWithTag(GameObject parent, string tag)
     {
         foreach (Transform child in parent.transform)
@@ -359,5 +407,10 @@ public class ProgressiveBuild : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public int GetLevel()
+    {
+        return playerLevel;
     }
 }

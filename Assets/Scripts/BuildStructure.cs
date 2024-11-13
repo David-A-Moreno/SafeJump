@@ -5,24 +5,21 @@ using UnityEngine;
 
 public class BuildStructure : MonoBehaviour
 {
-    private int playerLevel;
     private bool allThorns = false;
-    public bool isActive = true;
+    public bool isActive;
+
+    private Effects effectsScript;
+
+    [SerializeField]private LilyPadManager lilyPadManager;
+
+    private ProgressiveBuild progressiveBuild;
 
     void Awake()
     {
-        playerLevel = 1;
-    }
-
-    // Función para cambiar el nivel desde fuera del script
-    public void SetPlayerLevel(int level)
-    {
-        playerLevel = level;
-    }
-
-    public int GetPlayerLevel()
-    {
-        return playerLevel;
+        effectsScript = FindObjectOfType<Effects>();
+        lilyPadManager = FindObjectOfType<LilyPadManager>();
+        progressiveBuild = FindObjectOfType<ProgressiveBuild>();
+        isActive = false;
     }
 
     public void SetAllThorns(bool allThorns)
@@ -50,51 +47,18 @@ public class BuildStructure : MonoBehaviour
 
     private void InstantiateLilypadsBasedOnLevel()
     {
-        string[] lilypadPrefabs = { "Bonus1", "Bonus2", "Bonus3" };
-        Vector3[] positions = GetLilypadPositionsForLevel();
-        int count = GetLilypadCountForLevel();
-
+        string[] lilypadPrefabs;
+        if (Random.value < 0.2f)
+        {
+            lilypadPrefabs = new string[] { "Bonus2", "Bonus3" };
+        }
+        else
+        {
+            lilypadPrefabs = new string[] { "Bonus1", "Bonus2", "Bonus3" };
+        }
+        int count = lilyPadManager.GetCurrentLilyPadCount();
+        Vector3[] positions = lilyPadManager.GetCurrentLilyPadPositions();
         InstantiateLilypads(lilypadPrefabs, positions, count);
-    }
-
-    private Vector3[] GetLilypadPositionsForLevel()
-    {
-        return playerLevel switch
-        {
-            0 or 1 => new Vector3[] {
-                    new Vector3(0.59f, 0, -1.86f),
-                    new Vector3(0.59f, 0, 0.1f),
-                    new Vector3(0.59f, 0, 2.13f)
-                },
-            2 or 3 => new Vector3[] {
-                    new Vector3(0.59f, 0, -2.4f),
-                    new Vector3(0.59f, 0, -0.93f),
-                    new Vector3(0.59f, 0, 0.61f),
-                    new Vector3(0.59f, 0, 2.23f)
-                },
-            _ => new Vector3[] {
-                    new Vector3(0.59f, 0, -2.93f),
-                    new Vector3(0.59f, 0, -1.5f),
-                    new Vector3(0.59f, 0, -0.09f),
-                    new Vector3(0.59f, 0, 1.34f),
-                    new Vector3(0.59f, 0, 2.76f)
-                },
-        };
-    }
-
-    private int GetLilypadCountForLevel()
-    {
-        return playerLevel switch
-        {
-            0 or 1 => 3,
-            2 or 3 => 4,
-            _ => 5,
-        };
-    }
-
-    private void InstantiateRiver()
-    {
-        InstantiatePrefab("River", new Vector3(4, -0.2f, -0.5f));
     }
 
     void InstantiateRandomIsland(Vector3[] positions)
@@ -111,7 +75,13 @@ public class BuildStructure : MonoBehaviour
         InstantiatePrefab(availableOptions[randomIndexOption], positions[1]);
     }
 
-    void InstantiateLilypads(string[] prefabs, Vector3[] positions, int count)
+
+    private void InstantiateRiver()
+    {
+        InstantiatePrefab("River", new Vector3(4, -0.2f, -0.5f));
+    }
+
+    private void InstantiateLilypads(string[] prefabs, Vector3[] positions, int count)
     {
         if (allThorns)
         {
@@ -125,53 +95,89 @@ public class BuildStructure : MonoBehaviour
 
     private void InstantiateLilypadsWithCorrectOptions(string[] prefabs, Vector3[] positions, int count)
     {
+        // Limitar count a la longitud de positions para evitar accesos fuera de los límites del array
+        count = Mathf.Min(count, positions.Length);
+        float randomScale = lilyPadManager.GetCurrentLilyPadScale();
+
         List<int> availablePositions = new();
         for (int i = 0; i < count; i++)
         {
             availablePositions.Add(i);
         }
         GameObject prefab;
-
-        //Instanciar el camino libre
-        int randomIndex;
-        int optionPosition;
-
-        //Instanciar las otras opciones
         List<string> availableOptions = prefabs.ToList();
 
-        // Probabilidad del 30% para mantener el "Bonus1"
-        if (Random.Range(0f, 1f) > 0.3f)
-        {
-            availableOptions.Remove("Bonus1");
-        }
-
-        int randomIndexOption;
         while (availablePositions.Count != 0)
         {
-            randomIndexOption = Random.Range(0, availableOptions.Count);
-            randomIndex = Random.Range(0, availablePositions.Count);
-            optionPosition = availablePositions[randomIndex];
+            int randomIndexOption = Random.Range(0, availableOptions.Count);
+            int randomIndex = Random.Range(0, availablePositions.Count);
+            int optionPosition = availablePositions[randomIndex];
             prefab = InstantiatePrefab(availableOptions[randomIndexOption], positions[optionPosition]);
-            //if (availableOptions[randomIndexOption] != "Thorns")
-            //{
-            //availableOptions.RemoveAt(randomIndexOption);
-            //}
             prefab.SetActive(isActive);
+
+            // Aplicar escala aleatoria si es Nivel 3 o superior
+            if (progressiveBuild.GetLevel() >= 3)
+            {
+                effectsScript.SetTargetScale(randomScale);
+            }
+
             availablePositions.RemoveAt(randomIndex);
         }
     }
 
     private void InstantiateLilypadsWithoutCorrectOptions(Vector3[] positions)
     {
-        GameObject prefab;
-
         for (int i = 0; i < positions.Length; i++)
         {
-            prefab = InstantiatePrefab("Thorns", positions[i]);
+            GameObject prefab = InstantiatePrefab("Thorns", positions[i]);
             prefab.SetActive(isActive);
+
+            // Nivel 5: Probabilidad del 50% de cambiar los materiales de las espinas
+            if (progressiveBuild.GetLevel() == 5 && Random.value < 0.2f)
+            {
+                ChangeThornMaterials(prefab);
+            }
+        }
+    }
+
+    private void ChangeThornMaterials(GameObject thorn)
+    {
+        // Seleccionar un Bonus aleatorio y aplicar sus dos materiales correspondientes
+        int bonusIndex = Random.Range(1, 4); // Bonus1, Bonus2 o Bonus3
+        string material1 = $"Bonus{bonusIndex}Material1";
+        string material2 = $"Bonus{bonusIndex}Material2";
+
+        // Cargar los materiales desde Resources
+        Material mat1 = Resources.Load<Material>("Materials/" + material1);
+        Material mat2 = Resources.Load<Material>("Materials/" + material2);
+
+        if (mat1 == null || mat2 == null)
+        {
+            Debug.LogError("Error: No se pudieron cargar los materiales.");
+            return;
         }
 
+        // Aplicar los materiales a los hijos "Thorn" y "Thorn (1)"
+        foreach (Transform child in thorn.transform)
+        {
+            if (child.name == "Thorn" || child.name == "Thorn (1)")
+            {
+                Renderer renderer = child.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    Material[] materials = renderer.materials;
+                    materials[0] = mat1;
+                    materials[1] = mat2;
+                    renderer.materials = materials;
+                }
+                else
+                {
+                    Debug.LogWarning("El objeto " + child.name + " no tiene un Renderer.");
+                }
+            }
+        }
     }
+
 
     GameObject InstantiatePrefab(string prefabName, Vector3 position)
     {

@@ -15,7 +15,7 @@ public class Movement : MonoBehaviour
     private bool waitForObjectDestruction = false;
 
     // Velocidad de movimiento
-    private float speed = 55;
+    private float speed = 20;
 
     private bool gameOver = false;
     //ProgressiveBuild.cs
@@ -50,8 +50,9 @@ public class Movement : MonoBehaviour
             }
             else
             {
-                forestManagerReference.GetComponent<ProgressiveBuild>().AutomaticMoveTimer();
-
+                ProgressiveBuild progressiveBuild = forestManagerReference.GetComponent<ProgressiveBuild>();
+                progressiveBuild.AutomaticMoveTimer();
+                progressiveBuild.DeactivateAllChildren();
             }
         }
     }
@@ -79,6 +80,17 @@ public class Movement : MonoBehaviour
         waitForObjectDestruction = false;
         forestManagerReference.GetComponent<ProgressiveBuild>().OneStep();
     }
+
+    public void SetSpeed(float speed)
+    {
+        this.speed = speed;
+    }
+
+    public float GetSpeed()
+    {
+        return speed;
+    }
+
 
     public void SetGameOver()
     {

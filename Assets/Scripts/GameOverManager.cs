@@ -19,6 +19,9 @@ public class GameOverManager : MonoBehaviour
     [SerializeField]
     private TMP_Text textPoints;
 
+    [SerializeField]
+    private LilyPadManager lilyPadManager;
+
     private int points = 0;
 
     public void increasePoints(int numberOfPoints)
