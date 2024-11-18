@@ -32,6 +32,12 @@ public class ProgressiveBuild : MonoBehaviour
     [SerializeField]
     private LilyPadManager lilyPadManager;
 
+    [SerializeField]
+    private AudioFX audioFX;
+
+    [SerializeField]
+    private AudioSource music;
+
     private GameObject lastStructure = null;
 
     private int stepsProgress = 0;
@@ -326,10 +332,14 @@ public class ProgressiveBuild : MonoBehaviour
         // Destruir el efecto
         effects.DestroyOptionEffect(targetStructure);
 
-        // Esperar 2 segundos
-        yield return new WaitForSeconds(0.5f);
+        audioFX.PlaySound(5);
 
-        // Aqu� contin�a el c�digo que se ejecutar� despu�s de la espera de 2 segundos
+        float waitingTime = (allThorns) ? 0.5f : 1f;
+
+        // Esperar 2 segundos
+        yield return new WaitForSeconds(waitingTime);
+
+        // AquI continua el codigo que se ejecutar despues de la espera de 2 segundos
         if (stepsProgress > 0)
         {
             if (allThorns)
@@ -339,6 +349,8 @@ public class ProgressiveBuild : MonoBehaviour
             else
             {
                 gameOverScript.GameOver(targetStructure.transform.position, true);
+                audioFX.PlaySound(4);
+                music.Stop();
             }
         }
     }

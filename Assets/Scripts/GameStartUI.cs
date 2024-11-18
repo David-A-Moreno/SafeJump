@@ -7,6 +7,9 @@ public class GameStartUI : MonoBehaviour
     [SerializeField]
     private GameObject gameStartUI;
 
+    [SerializeField]
+    private AudioSource music;
+
     private static bool firstGame = true;
 
     public void showGameStartUI()
@@ -14,6 +17,7 @@ public class GameStartUI : MonoBehaviour
         if (firstGame)
         {
             gameStartUI.SetActive(true);
+            music.volume = 0.05f;
         }
     }
 

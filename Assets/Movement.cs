@@ -23,6 +23,9 @@ public class Movement : MonoBehaviour
     private GameObject forestManagerReference;
 
     [SerializeField]
+    private AudioFX audioFX;
+
+    [SerializeField]
     private GameOverManager gameOverScript;
 
     // Update se llama una vez por frame
@@ -46,6 +49,7 @@ public class Movement : MonoBehaviour
             waitForObjectDestruction = false;
             if (gameOver)
             {
+                audioFX.PlaySound(4);
                 gameOverScript.GameOver(targetPosition, false);
             }
             else

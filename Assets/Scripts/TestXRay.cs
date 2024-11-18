@@ -13,6 +13,7 @@ public class TestXRay : MonoBehaviour
     [SerializeField] private Movement moveProvider;//Movement.cs
     [SerializeField] private GameOverManager gameOver;
     [SerializeField] private UIPointsManager uiPointsManager;
+    [SerializeField] private AudioFX audioFX;
 
     private void OnEnable()
     {
@@ -33,18 +34,23 @@ public class TestXRay : MonoBehaviour
                 {
                     moveProvider.SetGameOver();
                 }
-                else if (hit.transform.CompareTag("Bonus1"))
+                else
                 {
-                    points = 20;
+                    audioFX.PlaySound(1);
+                    if (hit.transform.CompareTag("Bonus1"))
+                    {
+                        points = 20;
+                    }
+                    else if (hit.transform.CompareTag("Bonus2"))
+                    {
+                        points = 8;
+                    }
+                    else if (hit.transform.CompareTag("Bonus3"))
+                    {
+                        points = 5;
+                    }
                 }
-                else if (hit.transform.CompareTag("Bonus2"))
-                {
-                    points = 8;
-                }
-                else if (hit.transform.CompareTag("Bonus3"))
-                {
-                    points = 5;
-                }
+                
 
                 if (points != 0)
                 {
