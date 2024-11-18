@@ -9,11 +9,12 @@ public class TestXRay : MonoBehaviour
     [SerializeField] private XRRayInteractor rayInteractor;
     [SerializeField] private InputActionReference triggerAction;
     [SerializeField] private XRBaseController xrController;
-    [SerializeField] private float moveSpeed = 6f;
     [SerializeField] private Movement moveProvider;//Movement.cs
     [SerializeField] private GameOverManager gameOver;
     [SerializeField] private UIPointsManager uiPointsManager;
     [SerializeField] private AudioFX audioFX;
+    [SerializeField] private TestXRay otherHand;
+    private bool move = false;
 
     private void OnEnable()
     {
@@ -25,8 +26,10 @@ public class TestXRay : MonoBehaviour
         if (rayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit hit))
         {
             var interactable = hit.transform.GetComponent<XRSimpleInteractable>();
-            if (interactable != null)
+            if (interactable != null && !move)
             {
+                move = true;
+                otherHand.SetMove(true);
                 moveProvider.SetTargetPosition(hit.transform.position);
                 moveProvider.SetMove(true);
                 int points = 0;
@@ -65,6 +68,11 @@ public class TestXRay : MonoBehaviour
     {
         GameObject selectedObject = args.interactableObject.transform.gameObject;
         Debug.Log("Objeto interactuado: " + selectedObject.name);
+    }
+
+    public void SetMove(bool move)
+    {
+        this.move = move;
     }
 
     void OnDestroy()

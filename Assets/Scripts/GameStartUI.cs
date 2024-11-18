@@ -26,12 +26,7 @@ public class GameStartUI : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    void Start()
-    {
-        Debug.Log(firstGame);
-    }
-
-    public void setFirstGame (bool first)
+        public void setFirstGame (bool first)
     {
         firstGame = first;
     }

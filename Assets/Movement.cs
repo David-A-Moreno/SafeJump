@@ -12,6 +12,12 @@ public class Movement : MonoBehaviour
     [SerializeField]
     private bool move = false;
 
+    [SerializeField]
+    private TestXRay rightHand;
+
+    [SerializeField]
+    private TestXRay leftHand;
+
     private bool waitForObjectDestruction = false;
 
     // Velocidad de movimiento
@@ -45,6 +51,8 @@ public class Movement : MonoBehaviour
         // Si el objeto ha alcanzado la posición objetivo, detén el movimiento
         if (transform.position == targetPosition)
         {
+            rightHand.SetMove(false);
+            leftHand.SetMove(false);
             move = false;
             waitForObjectDestruction = false;
             if (gameOver)
