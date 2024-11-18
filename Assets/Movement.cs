@@ -18,6 +18,9 @@ public class Movement : MonoBehaviour
     [SerializeField]
     private TestXRay leftHand;
 
+    [SerializeField]
+    private AudioSource music;
+
     private bool waitForObjectDestruction = false;
 
     // Velocidad de movimiento
@@ -58,6 +61,7 @@ public class Movement : MonoBehaviour
             if (gameOver)
             {
                 audioFX.PlaySound(4);
+                music.mute = true;
                 gameOverScript.GameOver(targetPosition, false);
             }
             else

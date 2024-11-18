@@ -150,8 +150,16 @@ public class ProgressiveBuild : MonoBehaviour
 
         if (allThorns && playerLevel > 3)
         {
-            // Cambia el patrón y escala de nenúfares al encontrar una opción "no-go"
-            lilyPadManager.InitializeLevel(playerLevel);
+            if (structures.Count > 1) // se asegura de que hay al menos dos estructuras en la lista
+            {
+                GameObject penultimateStructure = structures[^2]; // Obtener el penultimo objeto
+                BuildStructure penultimateBuild = penultimateStructure.GetComponent<BuildStructure>();
+                if (penultimateBuild != null && !penultimateBuild.GetAllThorns())
+                {
+                    // Ejecutar logica para penultima estructura con "allThorns"
+                    lilyPadManager.InitializeLevel(playerLevel);
+                }
+            }
         }
 
     }
@@ -240,27 +248,24 @@ public class ProgressiveBuild : MonoBehaviour
         {
             if (playerLevel == 1) 
             {
-                waitTime = 2.5f;
+                waitTime = 2.7f;
                 movement.SetSpeed(20);
             }
             else if (playerLevel == 2)
             {
-                waitTime = 1.5f;
+                waitTime = 2f;
                 movement.SetSpeed(28);
             }
             else if (playerLevel == 3)
             {
-                waitTime = 1f;
+                waitTime = 1.5f;
                 movement.SetSpeed(40);
             }
             else
             {
-                waitTime = 0.65f;
+                waitTime = 1f;
                 movement.SetSpeed(55);
             }
-            //waitTime = (stepsProgress >= 1 && stepsProgress <= 5) ? 2f : 0.8f;
-            //waitTime = 0.5f;
-
         }
         else
         {
@@ -350,7 +355,7 @@ public class ProgressiveBuild : MonoBehaviour
             {
                 gameOverScript.GameOver(targetStructure.transform.position, true);
                 audioFX.PlaySound(4);
-                music.Stop();
+                music.mute = true;
             }
         }
     }

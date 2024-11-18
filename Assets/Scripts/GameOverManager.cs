@@ -42,7 +42,7 @@ public class GameOverManager : MonoBehaviour
         gameStartUI.setFirstGame(false);
         GameOverUI.SetActive(true);
 
-        textPoints.text = "Obtuviste " + points + " puntos";
+        textPoints.text = points.ToString();
 
         Vector3 uiPosition;
         if (timeLimitReached)

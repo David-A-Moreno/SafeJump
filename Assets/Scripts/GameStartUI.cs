@@ -26,7 +26,12 @@ public class GameStartUI : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-        public void setFirstGame (bool first)
+    public void doExitGame()
+    {
+        Application.Quit();
+    }
+
+    public void setFirstGame (bool first)
     {
         firstGame = first;
     }

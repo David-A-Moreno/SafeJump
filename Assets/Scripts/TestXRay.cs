@@ -23,42 +23,45 @@ public class TestXRay : MonoBehaviour
 
     void OnTriggerActivated(InputAction.CallbackContext context)
     {
-        if (rayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit hit))
+        if (rayInteractor != null && rayInteractor.TryGetCurrent3DRaycastHit(out RaycastHit hit))
         {
-            var interactable = hit.transform.GetComponent<XRSimpleInteractable>();
-            if (interactable != null && !move)
+            if (hit.transform != null)
             {
-                move = true;
-                otherHand.SetMove(true);
-                moveProvider.SetTargetPosition(hit.transform.position);
-                moveProvider.SetMove(true);
-                int points = 0;
-                if (hit.transform.CompareTag("Thorns"))
+                var interactable = hit.transform.GetComponent<XRSimpleInteractable>();
+                if (interactable != null && !move)
                 {
-                    moveProvider.SetGameOver();
-                }
-                else
-                {
-                    audioFX.PlaySound(1);
-                    if (hit.transform.CompareTag("Bonus1"))
+                    move = true;
+                    otherHand.SetMove(true);
+                    moveProvider.SetTargetPosition(hit.transform.position);
+                    moveProvider.SetMove(true);
+                    int points = 0;
+                    if (hit.transform.CompareTag("Thorns"))
                     {
-                        points = 20;
+                        moveProvider.SetGameOver();
                     }
-                    else if (hit.transform.CompareTag("Bonus2"))
+                    else
                     {
-                        points = 8;
+                        audioFX.PlaySound(1);
+                        if (hit.transform.CompareTag("Bonus1"))
+                        {
+                            points = 20;
+                        }
+                        else if (hit.transform.CompareTag("Bonus2"))
+                        {
+                            points = 8;
+                        }
+                        else if (hit.transform.CompareTag("Bonus3"))
+                        {
+                            points = 5;
+                        }
                     }
-                    else if (hit.transform.CompareTag("Bonus3"))
-                    {
-                        points = 5;
-                    }
-                }
-                
 
-                if (points != 0)
-                {
-                    gameOver.increasePoints(points);
-                    uiPointsManager.ShowPointsUI(hit.point, points);
+
+                    if (points != 0)
+                    {
+                        gameOver.increasePoints(points);
+                        uiPointsManager.ShowPointsUI(hit.point, points);
+                    }
                 }
             }
         }
@@ -67,7 +70,6 @@ public class TestXRay : MonoBehaviour
     public void MostrarInfo(SelectEnterEventArgs args)
     {
         GameObject selectedObject = args.interactableObject.transform.gameObject;
-        Debug.Log("Objeto interactuado: " + selectedObject.name);
     }
 
     public void SetMove(bool move)
