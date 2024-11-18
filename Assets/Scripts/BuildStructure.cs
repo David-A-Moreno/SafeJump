@@ -127,7 +127,7 @@ public class BuildStructure : MonoBehaviour
 
     private void InstantiateLilypadsWithoutCorrectOptions(Vector3[] positions)
     {
-        bool changeMaterial = Random.value < 0.2f;
+        bool changeMaterial = Random.value < 0.4f;
         for (int i = 0; i < positions.Length; i++)
         {
             GameObject prefab = InstantiatePrefab("Thorns", positions[i]);
