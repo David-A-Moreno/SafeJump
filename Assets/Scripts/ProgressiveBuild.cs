@@ -128,6 +128,7 @@ public class ProgressiveBuild : MonoBehaviour
 
     public void OneStep()
     {
+        Debug.Log("player level "+playerLevel);
         stepsProgress++;
         structuresCreated++;
         currentGoStreak++;
@@ -178,18 +179,21 @@ public class ProgressiveBuild : MonoBehaviour
     private void SetPlayerLevel()
     {
         int newLevel;
-
-        if (structuresCreated >= 31 && structuresCreated < 41)
+        if (structuresCreated >= 41 && structuresCreated < 51)
         {
             newLevel = 4;
         }
-        else if (structuresCreated >= 21 && structuresCreated < 31)
+        else if (structuresCreated >= 31 && structuresCreated < 41)
         {
             newLevel = 3;
         }
-        else if (structuresCreated >= 11 && structuresCreated < 21)
+        else if (structuresCreated >= 21 && structuresCreated < 31)
         {
             newLevel = 2;
+        }
+        else if (structuresCreated >= 11 && structuresCreated < 21)
+        {
+            newLevel = 1;
         }
         else
         {

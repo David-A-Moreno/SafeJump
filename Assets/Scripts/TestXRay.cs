@@ -37,22 +37,23 @@ public class TestXRay : MonoBehaviour
                     int points = 0;
                     if (hit.transform.CompareTag("Thorns"))
                     {
+                        moveProvider.SetIsAllThorns(true);
                         moveProvider.SetGameOver();
                     }
                     else
                     {
-                        audioFX.PlaySound(1);
+                        moveProvider.SetIsAllThorns(false);
                         if (hit.transform.CompareTag("Bonus1"))
                         {
-                            points = 20;
+                            points = 7;
                         }
                         else if (hit.transform.CompareTag("Bonus2"))
                         {
-                            points = 8;
+                            points = 4;
                         }
                         else if (hit.transform.CompareTag("Bonus3"))
                         {
-                            points = 5;
+                            points = 2;
                         }
                     }
 

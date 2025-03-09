@@ -37,6 +37,8 @@ public class Movement : MonoBehaviour
     [SerializeField]
     private GameOverManager gameOverScript;
 
+    public bool isAllThorns = false;
+
     // Update se llama una vez por frame
     void Update()
     {
@@ -68,10 +70,14 @@ public class Movement : MonoBehaviour
             }
             else
             {
-                
+                if (!isAllThorns)
+                {
+                    audioFX.PlaySound(1);
+                }
                 progressiveBuild.AutomaticMoveTimer();
                 progressiveBuild.DeactivateAllChildren();
             }
+            isAllThorns = true;
         }
     }
 
@@ -107,6 +113,11 @@ public class Movement : MonoBehaviour
     public float GetSpeed()
     {
         return speed;
+    }
+
+    public void SetIsAllThorns(bool isAllThorns)
+    {
+        this.isAllThorns = isAllThorns;
     }
 
 
