@@ -58,15 +58,17 @@ public class Movement : MonoBehaviour
             leftHand.SetMove(false);
             move = false;
             waitForObjectDestruction = false;
+            ProgressiveBuild progressiveBuild = forestManagerReference.GetComponent<ProgressiveBuild>();
             if (gameOver)
             {
                 audioFX.PlaySound(4);
                 music.mute = true;
+                progressiveBuild.setLostLevel();
                 gameOverScript.GameOver(targetPosition, false);
             }
             else
             {
-                ProgressiveBuild progressiveBuild = forestManagerReference.GetComponent<ProgressiveBuild>();
+                
                 progressiveBuild.AutomaticMoveTimer();
                 progressiveBuild.DeactivateAllChildren();
             }

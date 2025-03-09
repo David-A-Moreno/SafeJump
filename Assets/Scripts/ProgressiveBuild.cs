@@ -47,6 +47,11 @@ public class ProgressiveBuild : MonoBehaviour
     Vector3 position = new(0, 0, 0);
     Vector3 resetPosition = new(0, 0, 0);
 
+    public int nogoOptionsAvoided;
+    private int bestGoStreak = 0;
+    private int currentGoStreak;
+    private int lostLevel { get; set; }
+
     // Lista para almacenar todas las estructuras
     private List<GameObject> structures = new();
 
@@ -61,6 +66,11 @@ public class ProgressiveBuild : MonoBehaviour
     {
         InitializeStructures();
         gameStartUI.showGameStartUI();
+        nogoOptionsAvoided = 0;
+        bestGoStreak = 0;
+        currentGoStreak = 0;
+        lostLevel = 0;
+        Debug.Log(structuresCreated);
     }
 
     void Update()
@@ -120,6 +130,7 @@ public class ProgressiveBuild : MonoBehaviour
     {
         stepsProgress++;
         structuresCreated++;
+        currentGoStreak++;
         //Inicializar nueva estructura
         GameObject randomStructure = InstantiateStructure();
         if (randomStructure == null) return;
@@ -332,6 +343,11 @@ public class ProgressiveBuild : MonoBehaviour
         StartCoroutine(WaitAndExecute(targetStructure, allThorns));
     }
 
+    public int GetLostLevel()
+    {
+        return lostLevel;
+    }
+
     private IEnumerator WaitAndExecute(GameObject targetStructure, bool allThorns)
     {
         // Destruir el efecto
@@ -350,14 +366,31 @@ public class ProgressiveBuild : MonoBehaviour
             if (allThorns)
             {
                 movement.SetMove(true);
+                nogoOptionsAvoided++;
+                if (currentGoStreak > bestGoStreak)
+                {
+                    bestGoStreak = currentGoStreak;
+                }
+                currentGoStreak = 0;
             }
             else
             {
+                setLostLevel();
                 gameOverScript.GameOver(targetStructure.transform.position, true);
                 audioFX.PlaySound(4);
                 music.mute = true;
             }
         }
+    }
+
+    public void setLostLevel()
+    {
+        lostLevel = playerLevel;
+    }
+
+    public int GetBestGoStreak()
+    {
+        return bestGoStreak;
     }
 
     public void ActivateAllChildren(GameObject parent)
