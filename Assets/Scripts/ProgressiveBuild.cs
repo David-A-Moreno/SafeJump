@@ -70,7 +70,6 @@ public class ProgressiveBuild : MonoBehaviour
         bestGoStreak = 0;
         currentGoStreak = 0;
         lostLevel = 0;
-        Debug.Log(structuresCreated);
     }
 
     void Update()
@@ -382,7 +381,6 @@ public class ProgressiveBuild : MonoBehaviour
                 setLostLevel();
                 gameOverScript.GameOver(targetStructure.transform.position, true);
                 audioFX.PlaySound(4);
-                music.mute = true;
             }
         }
     }

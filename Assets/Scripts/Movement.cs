@@ -64,7 +64,6 @@ public class Movement : MonoBehaviour
             if (gameOver)
             {
                 audioFX.PlaySound(4);
-                music.mute = true;
                 progressiveBuild.setLostLevel();
                 gameOverScript.GameOver(targetPosition, false);
             }

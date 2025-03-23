@@ -17,7 +17,6 @@ public class GameStartUI : MonoBehaviour
         if (firstGame)
         {
             gameStartUI.SetActive(true);
-            music.volume = 0.05f;
         }
     }
 
